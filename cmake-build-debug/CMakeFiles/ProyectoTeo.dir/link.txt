@@ -1,0 +1,3 @@
+"C:\Program Files\JetBrains\CLion 2020.2.3\bin\cmake\win\bin\cmake.exe" -E rm -f CMakeFiles\ProyectoTeo.dir/objects.a
+C:\MinGW\bin\ar.exe cr CMakeFiles\ProyectoTeo.dir/objects.a @CMakeFiles\ProyectoTeo.dir\objects1.rsp
+C:\MinGW\bin\g++.exe -g   -Wl,--whole-archive CMakeFiles\ProyectoTeo.dir/objects.a -Wl,--no-whole-archive  -o ProyectoTeo.exe -Wl,--out-implib,libProyectoTeo.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\ProyectoTeo.dir\linklibs.rsp

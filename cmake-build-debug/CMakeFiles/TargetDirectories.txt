@@ -1,0 +1,3 @@
+C:/Users/Jorge/Desktop/GitHub/Teoria/ProyectoTeo/cmake-build-debug/CMakeFiles/ProyectoTeo.dir
+C:/Users/Jorge/Desktop/GitHub/Teoria/ProyectoTeo/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/Jorge/Desktop/GitHub/Teoria/ProyectoTeo/cmake-build-debug/CMakeFiles/rebuild_cache.dir
