@@ -11,7 +11,7 @@ class execute {
 private:
     int _key_;
 public:
-    execute(int key);
+    explicit execute(int key);
     ~execute();
     void ReciveData();
     void ProcessData();

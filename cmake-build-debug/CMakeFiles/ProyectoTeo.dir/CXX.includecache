@@ -1,0 +1,30 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+C:/Users/Jorge/Desktop/GitHub/Teoria/ProyectoTeo/src/execute.cpp
+execute.h
+C:/Users/Jorge/Desktop/GitHub/Teoria/ProyectoTeo/src/execute.h
+
+C:/Users/Jorge/Desktop/GitHub/Teoria/ProyectoTeo/src/execute.h
+libs.h
+C:/Users/Jorge/Desktop/GitHub/Teoria/ProyectoTeo/src/libs.h
+
+C:/Users/Jorge/Desktop/GitHub/Teoria/ProyectoTeo/src/libs.h
+iostream
+-
+vector
+-
+string
+-
+fstream
+-
+
+C:/Users/Jorge/Desktop/GitHub/Teoria/ProyectoTeo/src/main.cpp
+execute.h
+C:/Users/Jorge/Desktop/GitHub/Teoria/ProyectoTeo/src/execute.h
+
