@@ -3,6 +3,7 @@
 //
 
 #include "execute.h"
+#include "AFD.h"
 
 execute::execute(int key) : _key_(key) {}
 
@@ -15,8 +16,9 @@ void execute::ReciveData() {
     std::ifstream ifs(s);
 
     std::string t;
-    getline(ifs, t);
-    std::cout << t << std::endl;
+    //getline(ifs, t);
+    ifs >> t;
+    std::cout << stoi(t)+1 << std::endl;
 }
 
 void execute::ProcessData() {

@@ -9,5 +9,6 @@
 #include <vector>
 #include <string>
 #include <fstream>
+#include <limits>
 
 #endif //PROYECTOTEO_LIBS_H
