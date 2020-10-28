@@ -8,9 +8,12 @@
 #include <iostream>
 #include <vector>
 #include <list>
+#include <map>
+#include <unordered_map>
 #include <string>
 #include <fstream>
 #include <limits>
-#include <unordered_map>
+#include <cmath>
+#include <algorithm>
 
 #endif //PROYECTOTEO_LIBS_H

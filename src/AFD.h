@@ -18,15 +18,15 @@ struct AFD{
     int _states_;
 
     AFD(int qStates, int init, std::vector<int>& finals) :
-            v(std::vector<std::pair<int, int>> (qStates)),
-            _states_(qStates),
-            _init_(init),
-            _finals_(finals) {};
+            v (std::vector<std::pair<int, int>> (qStates)),
+            _states_ (qStates),
+            _init_ (init),
+            _finals_ (finals) {};
 
     ~AFD() = default;
 
     void Transition(int from, int transition, int to) {
-        if(transition)
+        if (transition)
             v[from].second = to;
         else
             v[from].first = to;
@@ -61,10 +61,10 @@ struct AFN{
     int _states_;
 
     AFN(int qStates, int final, std::vector<int>& initials) :
-            v(new std::pair<std::list<int>, std::list<int>>[qStates]),
-            _initials_(initials),
-            _states_(qStates),
-            _final_(final)
+            v (new std::pair<std::list<int>, std::list<int>>[qStates]),
+            _initials_ (initials),
+            _states_ (qStates),
+            _final_ (final)
     {}
 
     ~AFN() {
@@ -80,12 +80,11 @@ struct AFN{
 
     void PrintAFN() {
         for (int i=0; i<_states_; i++) {
-            if (_initials_[i]) {
+            if ( _initials_[i] ) {
                 for (auto x : v[i].first)
                     std::cout << "->\t " << i << "  -0-> " << x << std::endl;
                 for (auto y : v[i].second)
                     std::cout << "->\t " << i << "  -1-> " << y << std::endl;
-                std::cout << std::endl;
             } else if (i == _final_) {
                 for (auto x : v[i].first)
                     std::cout << "\t" << "(" << i << ") -0-> " << x << std::endl;
@@ -96,8 +95,8 @@ struct AFN{
                     std::cout << "\t " << i << "  -0-> " << x << std::endl;
                 for (auto y : v[i].second)
                     std::cout << "\t " << i << "  -0-> " << y << std::endl;
-                std::cout << std::endl;
             }
+            std::cout << std::endl;
         }
     }
 
@@ -114,8 +113,81 @@ AFN RevertAFD(AFD& afd) {
     return afn;
 }
 
-AFD Det(AFN& afn) {
+std::vector<std::vector<int>> SubSets(std::vector<int>& set) {
+    std::vector<std::vector<int>> subsets;
+    subsets.emplace_back();
 
+    for (int & i : set) {
+        auto subSetTemp = subsets;
+        for (auto& j : subSetTemp)
+            j.push_back(i);
+
+        for (auto& j : subSetTemp)
+            subsets.push_back(j);
+    }
+
+    return subsets;
+}
+
+AFD Det(AFN& afn) {
+    int states = (int)pow(2, afn._states_);
+    std::map<std::vector<int>, int> m;          // Se usa para los nuevos estados
+    std::vector<int> s;
+    std::vector<int> finals(states, 0);
+
+    int ind=0;
+    for (; ind<afn._states_; ind++)
+        s.push_back(ind);
+
+    ind=0;
+    for (const auto &x : SubSets(s))
+        m[x] = ind++;
+
+    ind=0;
+    for (const auto& x : m) {
+        for (auto y : x.first) {
+            if (y == afn._final_)
+                finals[ind] = 1;
+        }
+        ind++;
+    }
+
+    std::cout << "bien" << std::endl;
+
+    AFD afd(states, m[afn._initials_], finals);
+    std::cout << "bien2" << std::endl;
+
+    for (int i=0; i<states; i++) {
+        int s1 = afn.v[i].first.size();
+        int s2 = afn.v[i].second.size();
+        if (afn.v[i].first.empty())
+            afd.Transition(i, 0, m[{}]);
+        else if (s1 == 1)
+            afd.Transition(i, 0, m[{*afn.v[i].first.begin()}]);
+        else if (s1 > 1) {
+            // TODO
+            std::vector<int> temp;
+            for (auto& x : afn.v[i].first)
+                temp.push_back(x);
+            sort(temp.begin(), temp.end());
+            afd.Transition(i, 0, m[temp]);
+        }
+
+        if (afn.v[i].second.empty())
+            afd.Transition(i, 1, m[{}]);
+        else if (s2 == 1)
+            afd.Transition(i, 1, m[{*afn.v[i].second.begin()}]);
+        else if (s2 > 1) {
+            // TODO
+            std::vector<int> temp;
+            for (auto& x : afn.v[i].second)
+                temp.push_back(x);
+            sort(temp.begin(), temp.end());
+            afd.Transition(i, 1, m[temp]);
+        }
+    }
+
+    afd.PrintAFD();
 
     return afd;
 }

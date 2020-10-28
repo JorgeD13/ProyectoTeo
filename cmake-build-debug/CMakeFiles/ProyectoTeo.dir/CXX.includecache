@@ -29,16 +29,18 @@ vector
 -
 list
 -
+map
+-
+unordered_map
+-
 string
 -
 fstream
 -
 limits
 -
-unordered_map
+cmath
 -
-
-C:/Users/Jorge/Desktop/GitHub/Teoria/ProyectoTeo/src/main.cpp
-execute.h
-C:/Users/Jorge/Desktop/GitHub/Teoria/ProyectoTeo/src/execute.h
+algorithm
+-
 

@@ -35,8 +35,12 @@ void execute::ReciveData() {
         ifs >> from; ifs >> transition; ifs >> to;
         afd.Transition(from, transition, to);
     }
+    std::cout << "------------------------ AFD dado: ------------------------\n";
     afd.PrintAFD();
-    RevertAFD(afd);
+    std::cout << "-------------------- Invertir Estados: --------------------\n";
+    AFN afn = RevertAFD(afd);
+    std::cout << "---------------------- Deterministar: ----------------------\n";
+    Det(afn);
 }
 
 void execute::ProcessData() {
