@@ -37,6 +37,7 @@ void execute::ReciveData() {
     }
     std::cout << "------------------------ AFD dado: ------------------------\n";
     afd.PrintAFD();
+    std::cout << "\n";
     std::cout << "-------------------- Invertir Estados: --------------------\n";
     AFN afn = RevertAFD(afd);
     std::cout << "---------------------- Deterministar: ----------------------\n";

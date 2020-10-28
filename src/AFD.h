@@ -132,38 +132,46 @@ std::vector<std::vector<int>> SubSets(std::vector<int>& set) {
 AFD Det(AFN& afn) {
     int states = (int)pow(2, afn._states_);
     std::map<std::vector<int>, int> m;          // Se usa para los nuevos estados
-    std::vector<int> s;
-    std::vector<int> finals(states, 0);
+    std::vector<int> s;                         // Para hallar los subconjuntos
+    std::vector<int> finals(states, 0);     // Para enviar de parámetro al nuevo afd
+    std::vector<int> initials;                  // Para encontrar el estado inicial formado de un conjunto de estados iniciales en el afn
 
     int ind=0;
     for (; ind<afn._states_; ind++)
         s.push_back(ind);
 
     ind=0;
-    for (const auto &x : SubSets(s))
+    for (const auto &x : SubSets(s)) {
         m[x] = ind++;
-
-    ind=0;
-    for (const auto& x : m) {
-        for (auto y : x.first) {
+        for (auto y : x)
             if (y == afn._final_)
-                finals[ind] = 1;
-        }
-        ind++;
+                finals[m[x]] = 1;
     }
 
-    std::cout << "bien" << std::endl;
+    int a = 0;
+    for (const auto& x : SubSets(s)) {
+        std::cout << a++ << ":";
+        for (auto y : x)
+            std::cout << y << " ";
 
-    AFD afd(states, m[afn._initials_], finals);
-    std::cout << "bien2" << std::endl;
+        std::cout << std::endl;
+    }
 
-    for (int i=0; i<states; i++) {
+    for (int i=0; i<afn._states_; i++)
+        if (afn._initials_[i])
+            initials.push_back(i);
+
+    AFD afd(states, m[initials], finals);
+
+    for (int i=0; i<afn._states_; i++) {
         int s1 = afn.v[i].first.size();
         int s2 = afn.v[i].second.size();
         if (afn.v[i].first.empty())
             afd.Transition(i, 0, m[{}]);
-        else if (s1 == 1)
+        else if (s1 == 1) {
+            std::cout << "bien 3.1";
             afd.Transition(i, 0, m[{*afn.v[i].first.begin()}]);
+        }
         else if (s1 > 1) {
             // TODO
             std::vector<int> temp;
@@ -175,8 +183,10 @@ AFD Det(AFN& afn) {
 
         if (afn.v[i].second.empty())
             afd.Transition(i, 1, m[{}]);
-        else if (s2 == 1)
+        else if (s2 == 1) {
+            std::cout << "bien 3.2";
             afd.Transition(i, 1, m[{*afn.v[i].second.begin()}]);
+        }
         else if (s2 > 1) {
             // TODO
             std::vector<int> temp;
@@ -185,6 +195,7 @@ AFD Det(AFN& afn) {
             sort(temp.begin(), temp.end());
             afd.Transition(i, 1, m[temp]);
         }
+        std::cout << std::endl;
     }
 
     afd.PrintAFD();
