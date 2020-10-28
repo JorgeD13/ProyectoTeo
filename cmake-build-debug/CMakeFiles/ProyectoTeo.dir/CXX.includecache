@@ -7,6 +7,8 @@
 #IncludeRegexTransform: 
 
 C:/Users/Jorge/Desktop/GitHub/Teoria/ProyectoTeo/src/AFD.h
+utility
+-
 libs.h
 C:/Users/Jorge/Desktop/GitHub/Teoria/ProyectoTeo/src/libs.h
 
@@ -25,10 +27,18 @@ iostream
 -
 vector
 -
+list
+-
 string
 -
 fstream
 -
 limits
 -
+unordered_map
+-
+
+C:/Users/Jorge/Desktop/GitHub/Teoria/ProyectoTeo/src/main.cpp
+execute.h
+C:/Users/Jorge/Desktop/GitHub/Teoria/ProyectoTeo/src/execute.h
 

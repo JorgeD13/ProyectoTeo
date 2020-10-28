@@ -7,8 +7,10 @@
 
 #include <iostream>
 #include <vector>
+#include <list>
 #include <string>
 #include <fstream>
 #include <limits>
+#include <unordered_map>
 
 #endif //PROYECTOTEO_LIBS_H

@@ -14,11 +14,29 @@ execute::~execute() {
 void execute::ReciveData() {
     std::string s = "../input/input" + std::to_string(_key_);
     std::ifstream ifs(s);
+    std::vector<int> Efinals;
+    int qStates, init, qFinals, eFinal;
 
-    std::string t;
-    //getline(ifs, t);
-    ifs >> t;
-    std::cout << stoi(t)+1 << std::endl;
+    ifs >> qStates;
+    ifs >> init;
+    ifs >> qFinals;
+    Efinals = std::vector<int> (qStates, 0);
+    for(int i=0; i< qFinals; i++) {
+        ifs >> eFinal;
+        Efinals[eFinal] = 1;
+    }
+
+    AFD afd(qStates, init, Efinals);
+    //std::cout << qStates << init << qFinals << std::endl;
+    int from, transition, to;
+    for(int i=0; i<qStates; i++) {
+        ifs >> from; ifs >> transition; ifs >> to;
+        afd.Transition(from, transition, to);
+        ifs >> from; ifs >> transition; ifs >> to;
+        afd.Transition(from, transition, to);
+    }
+    afd.PrintAFD();
+    RevertAFD(afd);
 }
 
 void execute::ProcessData() {
