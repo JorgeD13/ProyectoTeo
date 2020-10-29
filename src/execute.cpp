@@ -5,7 +5,7 @@
 #include "execute.h"
 #include "AFD.h"
 
-execute::execute(int key) : _key_(key) {}
+execute::execute(int key) : _key_ (key) {}
 
 execute::~execute() {
     _key_ = 0;
@@ -35,13 +35,23 @@ void execute::ReciveData() {
         ifs >> from; ifs >> transition; ifs >> to;
         afd.Transition(from, transition, to);
     }
+
     std::cout << "------------------------ AFD dado: ------------------------\n";
     afd.PrintAFD();
     std::cout << "\n";
     std::cout << "-------------------- Invertir Estados: --------------------\n";
     AFN afn = RevertAFD(afd);
     std::cout << "---------------------- Deterministar: ----------------------\n";
-    Det(afn);
+    AFD afd1 = Det(afn);
+    std::cout << "------------------- Estados Alcanzables: -------------------\n";
+    AFD afd2 = Reacheable(afd);
+
+    std::cout << "-------------------- Invertir Estados: --------------------\n";
+    AFN afn1 = RevertAFD(afd);
+    std::cout << "---------------------- Deterministar: ----------------------\n";
+    AFD afd3 = Det(afn);
+    std::cout << "------------------- Estados Alcanzables: -------------------\n";
+    AFD afd4 = Reacheable(afd3);
 }
 
 void execute::ProcessData() {

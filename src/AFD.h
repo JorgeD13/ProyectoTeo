@@ -219,7 +219,7 @@ AFD Det(AFN& afn) {
     return afd;
 }
 
-AFD reacheable(AFD& afd) {
+AFD Reacheable(AFD& afd) {
     bool reachables[afd._states_];
     std::queue<int> q;
 
@@ -241,11 +241,26 @@ AFD reacheable(AFD& afd) {
         }
     }
 
+    std::unordered_map<int, int> m;
+    for (int i=0, indice=0; i<afd._states_; i++)
+        if ( reachables[i] )
+            m[i] = indice++;
 
+    std::vector<int> finals(m.size(), 0);
+    for (auto x : m)
+        if ( afd._finals_[x.first] )
+            finals[x.second] = 1;
 
-    AFD* Min;
+    AFD Min(m.size(), m[afd._init_], finals);
 
-    return *Min;
+    for (auto x : m) {
+        Min.Transition(x.second, 0, m[afd.v[x.first].first]);
+        Min.Transition(x.second, 1, m[afd.v[x.first].second]);
+    }
+
+    Min.PrintAFD();
+
+    return Min;
 }
 
 #endif //PROYECTOTEO_AFD_H
