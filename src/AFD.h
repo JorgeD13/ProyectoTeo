@@ -21,7 +21,8 @@ struct AFD{
             v (std::vector<std::pair<int, int>> (qStates)),
             _states_ (qStates),
             _init_ (init),
-            _finals_ (finals) {};
+            _finals_ (finals)
+        {};
 
     ~AFD() = default;
 
@@ -66,7 +67,7 @@ struct AFN{
             _initials_ (initials),
             _states_ (qStates),
             _final_ (final)
-    {}
+        {};
 
     ~AFN() {
         delete [] v;
@@ -197,20 +198,16 @@ AFD Det(AFN& afn) {
             afd.Transition(it.second, 0, it.second);
             afd.Transition(it.second, 1, it.second);
         } else {
-            std::set<int> SetOfStates0, SetOfStates1;           // Para hacer una union de los estados a los que transiciona un conjunto de estados
-            for (const auto& x : it.first) {                    // En el loop se recorren los estados del conjunto de estados
+            std::set<int> SetOfStates0, SetOfStates1;                       // Para hacer una union de los estados a los que transiciona un conjunto de estados
+            for (const auto& x : it.first) {                                // En el loop se recorren los estados del conjunto de estados
                 for (const auto& y : afn.v[x].first)
-                    SetOfStates0.insert(y);                     // Se agregan las transiciones con 0
+                    SetOfStates0.insert(y);                                 // Se agregan las transiciones con 0
                 for (const auto& y : afn.v[x].second)
-                    SetOfStates1.insert(y);                     // Se agregan las transiciones con 1
+                    SetOfStates1.insert(y);                                 // Se agregan las transiciones con 1
             }
 
-            std::vector<int> v0, v1;
-            for (const auto& x : SetOfStates0)
-                v0.push_back(x);                                // Conjunto de estados a los que transiciona con 0
-
-            for (const auto& x : SetOfStates1)
-                v1.push_back(x);                                // Conjunto de estados a los que transiciona con 1
+            std::vector<int> v0(SetOfStates0.begin(), SetOfStates0.end()),   // Conjunto de estados a los que transiciona con 0
+                             v1(SetOfStates1.begin(), SetOfStates1.end());   // Conjunto de estados a los que transiciona con 1
 
             afd.Transition(it.second, 0, m[v0]);
             afd.Transition(it.second, 1, m[v1]);
@@ -222,8 +219,32 @@ AFD Det(AFN& afn) {
     return afd;
 }
 
-AFD reacheable(AFD afd) {
+AFD reacheable(AFD& afd) {
+    bool reachables[afd._states_];
+    std::queue<int> q;
+
+    for (int i=0; i<afd._states_; i++)
+        reachables[i] = false;
+
+    q.push(afd._init_);
+    reachables[afd._init_] = true;
+
+    while (!q.empty()) {
+        int u = q.front();
+        q.pop();
+        if ( !reachables[afd.v[u].first] ) {
+            q.push(afd.v[u].first);
+            reachables[afd.v[u].first] = true;
+        } else if ( !reachables[afd.v[u].second] ) {
+            q.push(afd.v[u].second);
+            reachables[afd.v[u].second] = true;
+        }
+    }
+
+
+
     AFD* Min;
+
     return *Min;
 }
 
