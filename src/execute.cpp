@@ -44,12 +44,12 @@ void execute::exe() {
     std::cout << "---------------------- Deterministar: ----------------------\n";
     AFD afd1 = Det(afn);
     std::cout << "------------------- Estados Alcanzables: -------------------\n";
-    AFD afd2 = Reacheable(afd);
+    AFD afd2 = Reacheable(afd1);
 
     std::cout << "-------------------- Invertir Estados: --------------------\n";
-    AFN afn1 = RevertAFD(afd);
+    AFN afn1 = RevertAFD(afd2);
     std::cout << "---------------------- Deterministar: ----------------------\n";
-    AFD afd3 = Det(afn);
+    AFD afd3 = Det(afn1);
     std::cout << "------------------- Estados Alcanzables: -------------------\n";
     AFD afd4 = Reacheable(afd3);
 }
