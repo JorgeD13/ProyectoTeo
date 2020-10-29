@@ -26,7 +26,7 @@ struct AFD{
     ~AFD() = default;
 
     void Transition(int from, int transition, int to) {
-        if (transition)
+        if ( transition )
             v[from].second = to;
         else
             v[from].first = to;
@@ -36,11 +36,11 @@ struct AFD{
         for (int i=0; i<_states_; i++) {
             int first = v[i].first;
             int second = v[i].second;
-            if (i == _init_) {
+            if ( i == _init_ ) {
                 std::cout << "->\t " << i << "  -0-> " << first << std::endl;
                 std::cout << "->\t " << i << "  -1-> " << second << std::endl;
                 std::cout << std::endl;
-            } else if (_finals_[i]) {
+            } else if ( _finals_[i] ) {
                 std::cout << "\t" << "(" << i << ") -0-> " << first << std::endl;
                 std::cout << "\t" << "(" << i << ") -1-> " << second << std::endl;
                 std::cout << std::endl;
@@ -53,6 +53,7 @@ struct AFD{
     }
 
 };
+
 
 struct AFN{
     std::pair<std::list<int>, std::list<int>> *v;
@@ -71,8 +72,8 @@ struct AFN{
         delete [] v;
     }
 
-    void transition(int from, int transition, int to) const {
-        if (transition)
+    void Transition(int from, int transition, int to) const {
+        if ( transition )
             v[from].second.push_back(to);
         else
             v[from].first.push_back(to);
@@ -85,7 +86,7 @@ struct AFN{
                     std::cout << "->\t " << i << "  -0-> " << x << std::endl;
                 for (auto y : v[i].second)
                     std::cout << "->\t " << i << "  -1-> " << y << std::endl;
-            } else if (i == _final_) {
+            } else if ( i == _final_ ) {
                 for (auto x : v[i].first)
                     std::cout << "\t" << "(" << i << ") -0-> " << x << std::endl;
                 for (auto y : v[i].second)
@@ -105,8 +106,8 @@ struct AFN{
 AFN RevertAFD(AFD& afd) {
     AFN afn(afd._states_, afd._init_, afd._finals_);
     for (int i=0; i<afd._states_; i++) {
-        afn.transition(afd.v[i].first, 0, i);
-        afn.transition(afd.v[i].second, 1, i);
+        afn.Transition(afd.v[i].first, 0, i);
+        afn.Transition(afd.v[i].second, 1, i);
     }
 
     afn.PrintAFN();
@@ -133,7 +134,7 @@ AFD Det(AFN& afn) {
     int states = (int)pow(2, afn._states_);
     std::map<std::vector<int>, int> m;          // Se usa para los nuevos estados
     std::vector<int> s;                         // Para hallar los subconjuntos
-    std::vector<int> finals(states, 0);   // Para enviar de parámetro al nuevo afd
+    std::vector<int> finals(states, 0);     // Para enviar de parámetro al nuevo afd
     std::vector<int> initials;                  // Para encontrar el estado inicial formado de un conjunto de estados iniciales en el afn
 
     int ind=0;
@@ -149,7 +150,7 @@ AFD Det(AFN& afn) {
     }
 
     for (int i=0; i<afn._states_; i++)
-        if (afn._initials_[i])
+        if ( afn._initials_[i] )
             initials.push_back(i);
 
     AFD afd(states, m[initials], finals);
@@ -219,6 +220,11 @@ AFD Det(AFN& afn) {
     afd.PrintAFD();
 
     return afd;
+}
+
+AFD reacheable(AFD afd) {
+    AFD* Min;
+    return *Min;
 }
 
 #endif //PROYECTOTEO_AFD_H
