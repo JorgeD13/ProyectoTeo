@@ -203,7 +203,7 @@ AFD Det(AFN& afn) {
                 for (const auto& y : afn.v[x].second)
                     SetOfStates1.insert(y);                     // Se agregan las transiciones con 1
             }
-            std::cout << it.second;
+
             std::vector<int> v0, v1;
             for (const auto& x : SetOfStates0)
                 v0.push_back(x);                                // Conjunto de estados a los que transiciona con 0
