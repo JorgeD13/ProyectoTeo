@@ -13,9 +13,6 @@ private:
 public:
     explicit execute(int key);
     ~execute();
-    void ReciveData();
-    void ProcessData();
-    void ShowData();
     void exe();
 };
 

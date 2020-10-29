@@ -242,14 +242,23 @@ AFD Reacheable(AFD& afd) {
     }
 
     std::unordered_map<int, int> m;
-    for (int i=0, indice=0; i<afd._states_; i++)
-        if ( reachables[i] )
+    int indice=0;
+    for (int i=0; i<afd._states_; i++) {
+        if ( reachables[i] ) {
             m[i] = indice++;
+            std::cout << i << " <-> " << indice-1 << "\n";
+        }
+    }
 
     std::vector<int> finals(m.size(), 0);
-    for (auto x : m)
-        if ( afd._finals_[x.first] )
+
+    std::cout << "\nFINALES:\n" ;
+    for (auto x : m){
+        if ( afd._finals_[x.first] ) {
             finals[x.second] = 1;
+            std::cout << x.second << "<->" << x.first << std::endl;
+        }
+    }
 
     AFD Min(m.size(), m[afd._init_], finals);
 

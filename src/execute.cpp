@@ -11,7 +11,7 @@ execute::~execute() {
     _key_ = 0;
 }
 
-void execute::ReciveData() {
+void execute::exe() {
     std::string s = "../input/input" + std::to_string(_key_);
     std::ifstream ifs(s);
     std::vector<int> Efinals;
@@ -52,18 +52,4 @@ void execute::ReciveData() {
     AFD afd3 = Det(afn);
     std::cout << "------------------- Estados Alcanzables: -------------------\n";
     AFD afd4 = Reacheable(afd3);
-}
-
-void execute::ProcessData() {
-
-}
-
-void execute::ShowData() {
-
-}
-
-void execute::exe() {
-    ReciveData();
-    ProcessData();
-    ShowData();
 }
