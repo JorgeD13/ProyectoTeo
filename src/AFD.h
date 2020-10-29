@@ -73,9 +73,9 @@ struct AFN{
 
     void transition(int from, int transition, int to) const {
         if (transition)
-            v[from].first.push_back(to);
-        else
             v[from].second.push_back(to);
+        else
+            v[from].first.push_back(to);
     }
 
     void PrintAFN() {
@@ -105,8 +105,8 @@ struct AFN{
 AFN RevertAFD(AFD& afd) {
     AFN afn(afd._states_, afd._init_, afd._finals_);
     for (int i=0; i<afd._states_; i++) {
-        afn.v[afd.v[i].first].first.push_back(i);
-        afn.v[afd.v[i].second].second.push_back(i);
+        afn.transition(afd.v[i].first, 0, i);
+        afn.transition(afd.v[i].second, 1, i);
     }
 
     afn.PrintAFN();
