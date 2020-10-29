@@ -133,7 +133,7 @@ AFD Det(AFN& afn) {
     int states = (int)pow(2, afn._states_);
     std::map<std::vector<int>, int> m;          // Se usa para los nuevos estados
     std::vector<int> s;                         // Para hallar los subconjuntos
-    std::vector<int> finals(states, 0);     // Para enviar de parámetro al nuevo afd
+    std::vector<int> finals(states, 0);   // Para enviar de parámetro al nuevo afd
     std::vector<int> initials;                  // Para encontrar el estado inicial formado de un conjunto de estados iniciales en el afn
 
     int ind=0;
@@ -148,21 +148,12 @@ AFD Det(AFN& afn) {
                 finals[m[x]] = 1;
     }
 
-    int a = 0;
-    for (const auto& x : SubSets(s)) {
-        std::cout << a++ << ":";
-        for (auto y : x)
-            std::cout << y << " ";
-
-        std::cout << std::endl;
-    }
-
     for (int i=0; i<afn._states_; i++)
         if (afn._initials_[i])
             initials.push_back(i);
 
     AFD afd(states, m[initials], finals);
-
+    /*
     for (int i=0; i<afn._states_; i++) {
         int s1 = afn.v[i].first.size();
         int s2 = afn.v[i].second.size();
@@ -187,6 +178,7 @@ AFD Det(AFN& afn) {
             std::cout << "bien 3.2";
             afd.Transition(i, 1, m[{*afn.v[i].second.begin()}]);
         }
+
         else if (s2 > 1) {
             // TODO
             std::vector<int> temp;
@@ -196,6 +188,32 @@ AFD Det(AFN& afn) {
             afd.Transition(i, 1, m[temp]);
         }
         std::cout << std::endl;
+    }
+    */
+
+    for (const auto& it : m) {
+        if ( it.first.empty() ) {
+            afd.Transition(it.second, 0, it.second);
+            afd.Transition(it.second, 1, it.second);
+        } else {
+            std::set<int> SetOfStates0, SetOfStates1;           // Para hacer una union de los estados a los que transiciona un conjunto de estados
+            for (const auto& x : it.first) {                    // En el loop se recorren los estados del conjunto de estados
+                for (const auto& y : afn.v[x].first)
+                    SetOfStates0.insert(y);                     // Se agregan las transiciones con 0
+                for (const auto& y : afn.v[x].second)
+                    SetOfStates1.insert(y);                     // Se agregan las transiciones con 1
+            }
+            std::cout << it.second;
+            std::vector<int> v0, v1;
+            for (const auto& x : SetOfStates0)
+                v0.push_back(x);                                // Conjunto de estados a los que transiciona con 0
+
+            for (const auto& x : SetOfStates1)
+                v1.push_back(x);                                // Conjunto de estados a los que transiciona con 1
+
+            afd.Transition(it.second, 0, m[v0]);
+            afd.Transition(it.second, 1, m[v1]);
+        }
     }
 
     afd.PrintAFD();
