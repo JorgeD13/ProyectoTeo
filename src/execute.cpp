@@ -46,6 +46,7 @@ void execute::exe() {
     std::cout << "------------------- Estados Alcanzables: -------------------\n";
     AFD afd2 = Reacheable(afd1);
 
+
     std::cout << "-------------------- Invertir Estados: --------------------\n";
     AFN afn1 = RevertAFD(afd2);
     std::cout << "---------------------- Deterministar: ----------------------\n";

@@ -37,7 +37,11 @@ struct AFD{
         for (int i=0; i<_states_; i++) {
             int first = v[i].first;
             int second = v[i].second;
-            if ( i == _init_ ) {
+            if ( i == _init_ && _finals_[i] ) {
+                std::cout << "->\t(" << i << ") -0-> " << first << std::endl;
+                std::cout << "->\t(" << i << ") -1-> " << second << std::endl;
+                std::cout << std::endl;
+            } else if ( i == _init_ ) {
                 std::cout << "->\t " << i << "  -0-> " << first << std::endl;
                 std::cout << "->\t " << i << "  -1-> " << second << std::endl;
                 std::cout << std::endl;
@@ -82,7 +86,12 @@ struct AFN{
 
     void PrintAFN() {
         for (int i=0; i<_states_; i++) {
-            if ( _initials_[i] ) {
+            if ( i == _final_ && _initials_[i] ) {
+                for (auto x : v[i].first)
+                    std::cout << "->\t(" << i << ") -0-> " << x << std::endl;
+                for (auto y : v[i].second)
+                    std::cout << "->\t(" << i << ") -1-> " << y << std::endl;
+            } else if ( _initials_[i] ) {
                 for (auto x : v[i].first)
                     std::cout << "->\t " << i << "  -0-> " << x << std::endl;
                 for (auto y : v[i].second)
@@ -220,45 +229,36 @@ AFD Det(AFN& afn) {
 }
 
 AFD Reacheable(AFD& afd) {
-    bool reachables[afd._states_];
+    std::vector<bool> reachables(afd._states_, false);
     std::queue<int> q;
-
-    for (int i=0; i<afd._states_; i++)
-        reachables[i] = false;
 
     q.push(afd._init_);
     reachables[afd._init_] = true;
 
-    while (!q.empty()) {
+    while ( !q.empty() ) {
         int u = q.front();
         q.pop();
         if ( !reachables[afd.v[u].first] ) {
             q.push(afd.v[u].first);
             reachables[afd.v[u].first] = true;
-        } else if ( !reachables[afd.v[u].second] ) {
+        }
+
+        if ( !reachables[afd.v[u].second] ) {
             q.push(afd.v[u].second);
             reachables[afd.v[u].second] = true;
         }
     }
 
     std::unordered_map<int, int> m;
-    int indice=0;
-    for (int i=0; i<afd._states_; i++) {
-        if ( reachables[i] ) {
+    for (int i=0, indice = 0; i<afd._states_; i++)
+        if ( reachables[i] )
             m[i] = indice++;
-            std::cout << i << " <-> " << indice-1 << "\n";
-        }
-    }
 
     std::vector<int> finals(m.size(), 0);
 
-    std::cout << "\nFINALES:\n" ;
-    for (auto x : m){
-        if ( afd._finals_[x.first] ) {
+    for (auto x : m)
+        if ( afd._finals_[x.first] )
             finals[x.second] = 1;
-            std::cout << x.second << "<->" << x.first << std::endl;
-        }
-    }
 
     AFD Min(m.size(), m[afd._init_], finals);
 
