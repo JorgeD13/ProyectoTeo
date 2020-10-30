@@ -164,43 +164,6 @@ AFD Det(AFN& afn) {
             initials.push_back(i);
 
     AFD afd(states, m[initials], finals);
-    /*
-    for (int i=0; i<afn._states_; i++) {
-        int s1 = afn.v[i].first.size();
-        int s2 = afn.v[i].second.size();
-        if (afn.v[i].first.empty())
-            afd.Transition(i, 0, m[{}]);
-        else if (s1 == 1) {
-            std::cout << "bien 3.1";
-            afd.Transition(i, 0, m[{*afn.v[i].first.begin()}]);
-        }
-        else if (s1 > 1) {
-            // TODO
-            std::vector<int> temp;
-            for (auto& x : afn.v[i].first)
-                temp.push_back(x);
-            sort(temp.begin(), temp.end());
-            afd.Transition(i, 0, m[temp]);
-        }
-
-        if (afn.v[i].second.empty())
-            afd.Transition(i, 1, m[{}]);
-        else if (s2 == 1) {
-            std::cout << "bien 3.2";
-            afd.Transition(i, 1, m[{*afn.v[i].second.begin()}]);
-        }
-
-        else if (s2 > 1) {
-            // TODO
-            std::vector<int> temp;
-            for (auto& x : afn.v[i].second)
-                temp.push_back(x);
-            sort(temp.begin(), temp.end());
-            afd.Transition(i, 1, m[temp]);
-        }
-        std::cout << std::endl;
-    }
-    */
 
     for (const auto& it : m) {
         if ( it.first.empty() ) {
@@ -215,11 +178,11 @@ AFD Det(AFN& afn) {
                     SetOfStates1.insert(y);                                 // Se agregan las transiciones con 1
             }
 
-            std::vector<int> v0(SetOfStates0.begin(), SetOfStates0.end()),   // Conjunto de estados a los que transiciona con 0
-                             v1(SetOfStates1.begin(), SetOfStates1.end());   // Conjunto de estados a los que transiciona con 1
+            // std::vector<int> v0(SetOfStates0.begin(), SetOfStates0.end()),   // Conjunto de estados a los que transiciona con 0
+            //                 v1(SetOfStates1.begin(), SetOfStates1.end());   // Conjunto de estados a los que transiciona con 1
 
-            afd.Transition(it.second, 0, m[v0]);
-            afd.Transition(it.second, 1, m[v1]);
+            afd.Transition(it.second, 0, m[ std::vector<int>(SetOfStates0.begin(), SetOfStates0.end()) ]);
+            afd.Transition(it.second, 1, m[ std::vector<int>(SetOfStates1.begin(), SetOfStates1.end()) ]);
         }
     }
 
