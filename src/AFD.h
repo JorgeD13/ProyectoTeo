@@ -196,7 +196,7 @@ AFD Reacheable(AFD& afd) {
     std::queue<int> q;
 
     q.push(afd._init_);
-    reachables[afd._init_] = true;
+    reachables[ afd._init_ ] = true;
 
     while ( !q.empty() ) {
         int u = q.front();
@@ -223,7 +223,7 @@ AFD Reacheable(AFD& afd) {
         if ( afd._finals_[x.first] )
             finals[x.second] = 1;
 
-    AFD Min(m.size(), m[afd._init_], finals);
+    AFD Min(m.size(), m[ afd._init_ ], finals);
 
     for (auto x : m) {
         Min.Transition(x.second, 0, m[afd.v[x.first].first]);
