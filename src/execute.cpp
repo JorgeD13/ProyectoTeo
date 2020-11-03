@@ -46,11 +46,32 @@ void execute::exe() {
     std::cout << "------------------- Estados Alcanzables: -------------------\n";
     AFD afd2 = Reacheable(afd1);
 
-
     std::cout << "-------------------- Invertir Estados: --------------------\n";
     AFN afn1 = RevertAFD(afd2);
     std::cout << "---------------------- Deterministar: ----------------------\n";
     AFD afd3 = Det(afn1);
     std::cout << "------------------- Estados Alcanzables: -------------------\n";
     AFD afd4 = Reacheable(afd3);
+
+    int NewQStates = afd4._states_;
+    int NewInit = afd4._init_;
+    std::string of = "../output/output" + std::to_string(_key_);
+    std::ofstream ofs(of);
+    ofs << NewQStates << " " << NewInit;
+    std::string NewFinals;
+    int NewQFinals=0;
+    for (int i=0; i<afd4._finals_.size(); i++) {
+        if (afd4._finals_[i] != 0) {
+            NewFinals += " ";
+            NewFinals += std::to_string(i);
+            NewQFinals++;
+        }
+    }
+    ofs << " " << NewQFinals << NewFinals;
+    for (int i=0; i<afd4.v.size(); i++) {
+        ofs << "\n" << i << " " << 0 << " " << afd4.v[i].first;
+        ofs << "\n" << i << " " << 1 << " " << afd4.v[i].second;
+    }
+
+    ofs.close();
 }
