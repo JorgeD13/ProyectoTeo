@@ -12,11 +12,15 @@ utility
 libs.h
 C:/Users/Jorge/Desktop/GitHub/Teoria/ProyectoTeo/src/libs.h
 
+C:/Users/Jorge/Desktop/GitHub/Teoria/ProyectoTeo/src/FilesManagement.h
+AFD.h
+C:/Users/Jorge/Desktop/GitHub/Teoria/ProyectoTeo/src/AFD.h
+
 C:/Users/Jorge/Desktop/GitHub/Teoria/ProyectoTeo/src/execute.cpp
 execute.h
 C:/Users/Jorge/Desktop/GitHub/Teoria/ProyectoTeo/src/execute.h
-AFD.h
-C:/Users/Jorge/Desktop/GitHub/Teoria/ProyectoTeo/src/AFD.h
+FilesManagement.h
+C:/Users/Jorge/Desktop/GitHub/Teoria/ProyectoTeo/src/FilesManagement.h
 
 C:/Users/Jorge/Desktop/GitHub/Teoria/ProyectoTeo/src/execute.h
 libs.h

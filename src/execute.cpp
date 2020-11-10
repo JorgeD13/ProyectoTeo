@@ -3,7 +3,7 @@
 //
 
 #include "execute.h"
-#include "AFD.h"
+#include "FilesManagement.h"
 
 execute::execute(int key) : _key_ (key) {}
 
@@ -12,30 +12,36 @@ execute::~execute() {
 }
 
 void execute::exe() {
-    std::string s = "../input/input" + std::to_string(_key_);
-    std::ifstream ifs(s);
-    std::vector<int> Efinals;
-    int qStates, init, qFinals, eFinal;
+    // Declaring AFDs
+    AFD afd, Final;
 
-    ifs >> qStates;
-    ifs >> init;
-    ifs >> qFinals;
-    Efinals = std::vector<int> (qStates, 0);
-    for(int i=0; i< qFinals; i++) {
-        ifs >> eFinal;
-        Efinals[eFinal] = 1;
-    }
+    // Read archives
+    ReciveData(_key_, afd);
 
-    AFD afd(qStates, init, Efinals);
-    //std::cout << qStates << init << qFinals << std::endl;
-    int from, transition, to;
-    for(int i=0; i<qStates; i++) {
-        ifs >> from; ifs >> transition; ifs >> to;
-        afd.Transition(from, transition, to);
-        ifs >> from; ifs >> transition; ifs >> to;
-        afd.Transition(from, transition, to);
-    }
+    // Show original AFD
+    afd.PrintAFD();
 
+    std::cout << "MINIMO:\n";
+
+    // Running the algorithm
+    Brzozowski(afd, Final);
+
+    // Showing the AFD with the minimum number of states
+    Final.PrintAFD();
+
+    // Expresing the AFD in the same format of the input
+    ShowData(_key_, Final);
+
+    // TODO
+    /*
+     * El algoritmo de estados equivalentes
+     * La idea es crear una tabla para que
+     * los estados que no sean distinguibles
+     * se unan en un solo estado...
+     */
+}
+
+    /*
     std::cout << "------------------------ AFD dado: ------------------------\n";
     afd.PrintAFD();
     std::cout << "\n";
@@ -52,26 +58,4 @@ void execute::exe() {
     AFD afd3 = Det(afn1);
     std::cout << "------------------- Estados Alcanzables: -------------------\n";
     AFD afd4 = Reacheable(afd3);
-
-    int NewQStates = afd4._states_;
-    int NewInit = afd4._init_;
-    std::string of = "../output/output" + std::to_string(_key_);
-    std::ofstream ofs(of);
-    ofs << NewQStates << " " << NewInit;
-    std::string NewFinals;
-    int NewQFinals=0;
-    for (int i=0; i<afd4._finals_.size(); i++) {
-        if (afd4._finals_[i] != 0) {
-            NewFinals += " ";
-            NewFinals += std::to_string(i);
-            NewQFinals++;
-        }
-    }
-    ofs << " " << NewQFinals << NewFinals;
-    for (int i=0; i<afd4.v.size(); i++) {
-        ofs << "\n" << i << " " << 0 << " " << afd4.v[i].first;
-        ofs << "\n" << i << " " << 1 << " " << afd4.v[i].second;
-    }
-
-    ofs.close();
-}
+    */

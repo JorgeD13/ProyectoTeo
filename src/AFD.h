@@ -6,7 +6,6 @@
 #define PROYECTOTEO_AFD_H
 
 #include <utility>
-
 #include "libs.h"
 
 // #define INF numeric_limits<int>::max()
@@ -16,6 +15,11 @@ struct AFD{
     std::vector<int> _finals_;
     int _init_;
     int _states_;
+
+    AFD() :
+    _init_ (0),
+    _states_ (0)
+    {}
 
     AFD(int qStates, int init, std::vector<int>& finals) :
             v (std::vector<std::pair<int, int>> (qStates)),
@@ -120,7 +124,7 @@ AFN RevertAFD(AFD& afd) {
         afn.Transition(afd.v[i].second, 1, i);
     }
 
-    afn.PrintAFN();
+    // afn.PrintAFN();
     return afn;
 }
 
@@ -179,14 +183,14 @@ AFD Det(AFN& afn) {
             }
 
             // std::vector<int> v0(SetOfStates0.begin(), SetOfStates0.end()),   // Conjunto de estados a los que transiciona con 0
-            //                 v1(SetOfStates1.begin(), SetOfStates1.end());   // Conjunto de estados a los que transiciona con 1
+            //                  v1(SetOfStates1.begin(), SetOfStates1.end());   // Conjunto de estados a los que transiciona con 1
 
             afd.Transition(it.second, 0, m[ std::vector<int>(SetOfStates0.begin(), SetOfStates0.end()) ]);
             afd.Transition(it.second, 1, m[ std::vector<int>(SetOfStates1.begin(), SetOfStates1.end()) ]);
         }
     }
 
-    afd.PrintAFD();
+    // afd.PrintAFD();
 
     return afd;
 }
@@ -230,9 +234,24 @@ AFD Reacheable(AFD& afd) {
         Min.Transition(x.second, 1, m[afd.v[x.first].second]);
     }
 
-    Min.PrintAFD();
+    // Min.PrintAFD();
 
     return Min;
 }
+
+void Brzozowski(AFD& afdinicial, AFD& afdfinal) {
+    AFN afn1 = RevertAFD(afdinicial);
+    AFD afd1 = Det(afn1);
+    AFD afd2 = Reacheable(afd1);
+
+    AFN afn2 = RevertAFD(afd2);
+    AFD afd3 = Det(afn2);
+    afdfinal = Reacheable(afd3);
+}
+
+void EqualStatesAlgorithm(AFD& afdinicial, AFD& afdfinal) {
+
+}
+
 
 #endif //PROYECTOTEO_AFD_H
