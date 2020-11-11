@@ -12,6 +12,7 @@
 #include <unordered_map>
 #include <set>
 #include <queue>
+#include <deque>
 #include <string>
 #include <fstream>
 #include <limits>

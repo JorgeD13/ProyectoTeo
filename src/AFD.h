@@ -250,6 +250,89 @@ void Brzozowski(AFD& afdinicial, AFD& afdfinal) {
 }
 
 void EqualStatesAlgorithm(AFD& afdinicial, AFD& afdfinal) {
+    /// CAMBIAR A UNORDERED MAP
+    std::vector<std::map<int, bool>> v(afdinicial._states_);
+    std::deque<std::pair<int, int>> dq(afdinicial.v.begin(), afdinicial.v.end());
+
+    /// TABLA
+    for (int i=0; i<v.size(); i++)
+        for (int j=i+1; j<v.size(); j++)
+            v[i][j] = false;
+    
+
+    /// Distinguir estados finales
+    for (auto _x_ = 0; _x_ < afdinicial._finals_.size(); _x_++)
+        if ( afdinicial._finals_[ _x_ ] )
+            for (auto _y_ = 0; _y_ < afdinicial._finals_.size(); _y_++)
+                if ( !afdinicial._finals_[ _y_ ] ) {
+                    if (_x_ < _y_) {
+                        v[ _x_ ][ _y_ ] = true;
+                        std::cout << _x_ << "-" << _y_ << "\n";
+                    } else {
+                        v[ _y_ ][ _x_ ] = true;
+                        std::cout << _y_ << "-" << _x_ << "\n";
+                    }
+                }
+
+
+    /// Imprimir tabla
+    for (int i=0; i<v.size(); i++) {
+        std::cout << i << ":\n";
+        for (auto y : v[i])
+			std::cout << "\t" << y.first << " ";
+		std::cout<<std::endl;
+    }
+
+    bool count = true;  // Si hay un cambio en la tabla, contamos el cambio y volvemos a repetir
+    
+    while (count) {
+        count  = false;
+        int index = 0;
+        while ( !dq.empty() ) {
+            auto u = dq.front();
+            dq.pop_front();
+            auto it = dq.begin()++;
+            int curr = index+1;
+            // u=A y it B, C, D
+            while ( it != dq.end() ) {
+                int u0 = u.first,
+                    u1 = u.second,
+                    it0 = (*it).first,
+                    it1 = (*it).second;
+                if ( u0 < it0 && v[u0][it0] ) {
+                    count = true;
+                    v[index][curr] = true;
+                    std::cout << index << "-" << curr << "\n";
+                } else if ( it0 < u0 && v[it0][u0] ) {
+                    count = true;
+                    v[index][curr] = true;
+                    std::cout << index << "-" << curr << "\n";
+                }
+
+                if ( u1 < it1 && v[u1][it1] ) {
+                    count = true;
+                    v[index][curr] = true;
+                    std::cout << index << "-" << curr << "\n";
+                } else if ( it1 < u1 && v[it1][u1] ) {
+                    count = true;
+                    v[index][curr] = true;
+                    std::cout << index << "-" << curr << "\n";
+                }
+                it++;
+                curr++;
+            }
+            index++;
+        }
+    }
+
+    int in = 0;
+    for (const auto& x : v) {
+        std::cout << in++ << std::boolalpha;
+        for (auto y : x)
+            std::cout << "\t" << y.second;
+        std::cout << "\n";
+    }
+
 
 }
 

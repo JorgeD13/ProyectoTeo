@@ -13,7 +13,7 @@ execute::~execute() {
 
 void execute::exe() {
     // Declaring AFDs
-    AFD afd, Final;
+    AFD afd, Final1, Final2;
 
     // Read archives
     ReciveData(_key_, afd);
@@ -24,13 +24,13 @@ void execute::exe() {
     std::cout << "MINIMO:\n";
 
     // Running the algorithm
-    Brzozowski(afd, Final);
+    Brzozowski(afd, Final1);
 
     // Showing the AFD with the minimum number of states
-    Final.PrintAFD();
+    Final1.PrintAFD();
 
     // Expresing the AFD in the same format of the input
-    ShowData(_key_, Final);
+    ShowData(_key_, Final1);
 
     // TODO
     /*
@@ -39,6 +39,8 @@ void execute::exe() {
      * los estados que no sean distinguibles
      * se unan en un solo estado...
      */
+    std::cout << "Algoritmo de estados equivalentes" << std::endl;
+    EqualStatesAlgorithm(afd, Final2);
 }
 
     /*

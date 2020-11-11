@@ -41,6 +41,8 @@ set
 -
 queue
 -
+deque
+-
 string
 -
 fstream
