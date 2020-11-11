@@ -13,7 +13,7 @@ execute::~execute() {
 
 void execute::exe() {
     // Declaring AFDs
-    AFD afd, Final1, Final2;
+    AFD afd, Final1;
 
     // Read archives
     ReciveData(_key_, afd);
@@ -40,7 +40,7 @@ void execute::exe() {
      * se unan en un solo estado...
      */
     std::cout << "Algoritmo de estados equivalentes" << std::endl;
-    EqualStatesAlgorithm(afd, Final2);
+    EqualStatesAlgorithm(afd);
 }
 
     /*

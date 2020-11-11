@@ -169,7 +169,7 @@ AFD Det(AFN& afn) {
 
     AFD afd(states, m[initials], finals);
 
-    for (const auto& it : m) {
+    for (const auto& it : m) { // key, value
         if ( it.first.empty() ) {
             afd.Transition(it.second, 0, it.second);
             afd.Transition(it.second, 1, it.second);
@@ -221,6 +221,12 @@ AFD Reacheable(AFD& afd) {
         if ( reachables[i] )
             m[i] = indice++;
 
+    /*
+     * M[0] = 0
+     * M[5] = 1
+     * M[6] = 2
+     */
+
     std::vector<int> finals(m.size(), 0);
 
     for (auto x : m)
@@ -249,8 +255,9 @@ void Brzozowski(AFD& afdinicial, AFD& afdfinal) {
     afdfinal = Reacheable(afd3);
 }
 
-void EqualStatesAlgorithm(AFD& afdinicial, AFD& afdfinal) {
+std::vector<std::map<int, bool>> EqualStatesAlgorithm(AFD& afdi) {
     /// CAMBIAR A UNORDERED MAP
+    AFD afdinicial = Reacheable(afdi);
     std::vector<std::map<int, bool>> v(afdinicial._states_);
     std::deque<std::pair<int, int>> dq(afdinicial.v.begin(), afdinicial.v.end());
 
@@ -333,7 +340,7 @@ void EqualStatesAlgorithm(AFD& afdinicial, AFD& afdfinal) {
         std::cout << "\n";
     }
 
-
+    return v;
 }
 
 
