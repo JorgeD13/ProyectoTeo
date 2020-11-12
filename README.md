@@ -4,3 +4,4 @@ Integrantes:
 - Jorge Castillo
 - José Sanchez
 - Julisa Lapa
+PSDT: Trabajamos por VS life share
