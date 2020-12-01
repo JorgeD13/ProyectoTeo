@@ -1,2 +1,7 @@
-# ProyectoTeo
-Para el proyecto de Teoría de la Computación
+# Proyecto Teoría de la Computación
+## Minimización de AFDs
+Integrantes:
+- Jorge Castillo
+- José Sanchez
+- Julisa Lapa
+PSDT: Trabajamos por VS life share
