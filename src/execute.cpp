@@ -11,6 +11,7 @@ execute::~execute() {
     _key_ = 0;
 }
 
+/*
 void execute::exe() {
     // Declaring AFDs
     AFD afd, Final1;
@@ -38,17 +39,34 @@ void execute::exe() {
      * La idea es crear una tabla para que
      * los estados que no sean distinguibles
      * se unan en un solo estado...
-     */
+     *//*
     std::cout << "Algoritmo de estados equivalentes" << std::endl;
     EqualStatesAlgorithm(afd);
 }
+ */
+
+void execute::exe() {
+    // Declaring AFDs
+    AFD temp;
+
+    // Read archives
+    ReciveData(_key_, temp);
+
+    temp.PrintAFD();
+    // EqStates(temp);
+    // temp.PrintAFD();
+    // AFD f;
+    // Brzozowski(temp, f);
+    // f.PrintAFD();
+    std::cout << "\n";
+    Hopcroft(temp);
 
     /*
     std::cout << "------------------------ AFD dado: ------------------------\n";
-    afd.PrintAFD();
+    temp.PrintAFD();
     std::cout << "\n";
     std::cout << "-------------------- Invertir Estados: --------------------\n";
-    AFN afn = RevertAFD(afd);
+    AFN afn = RevertAFD(temp);
     std::cout << "---------------------- Deterministar: ----------------------\n";
     AFD afd1 = Det(afn);
     std::cout << "------------------- Estados Alcanzables: -------------------\n";
@@ -60,4 +78,7 @@ void execute::exe() {
     AFD afd3 = Det(afn1);
     std::cout << "------------------- Estados Alcanzables: -------------------\n";
     AFD afd4 = Reacheable(afd3);
-    */
+     */
+
+}
+

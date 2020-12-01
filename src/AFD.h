@@ -128,6 +128,7 @@ AFN RevertAFD(AFD& afd) {
     return afn;
 }
 
+// Sacado de:
 std::vector<std::vector<int>> SubSets(std::vector<int>& set) {
     std::vector<std::vector<int>> subsets;
     subsets.emplace_back();
@@ -156,13 +157,16 @@ AFD Det(AFN& afn) {
         s.push_back(ind);
 
     ind=0;
-    for (const auto &x : SubSets(s)) {
+    // std::cout << "aqui" << std::endl;
+    auto subs = SubSets(s);
+    // std::cout << "aqui" << std::endl;
+    for (const auto &x : subs) {
         m[x] = ind++;
         for (auto y : x)
             if (y == afn._final_)
                 finals[m[x]] = 1;
     }
-
+    // std::cout << "aqui" << std::endl;
     for (int i=0; i<afn._states_; i++)
         if ( afn._initials_[i] )
             initials.push_back(i);
@@ -255,9 +259,11 @@ void Brzozowski(AFD& afdinicial, AFD& afdfinal) {
     afdfinal = Reacheable(afd3);
 }
 
-std::vector<std::map<int, bool>> EqualStatesAlgorithm(AFD& afdi) {
+std::vector<std::map<int, bool>> EqualStatesAlgorithm(AFD& afdinicial) {
     /// CAMBIAR A UNORDERED MAP
-    AFD afdinicial = Reacheable(afdi);
+    // AFD afdinicial = Reacheable(afdi);
+    // afdi.PrintAFD();
+    // afdinicial.PrintAFD();
     std::vector<std::map<int, bool>> v(afdinicial._states_);
     std::deque<std::pair<int, int>> dq(afdinicial.v.begin(), afdinicial.v.end());
 
@@ -265,7 +271,6 @@ std::vector<std::map<int, bool>> EqualStatesAlgorithm(AFD& afdi) {
     for (int i=0; i<v.size(); i++)
         for (int j=i+1; j<v.size(); j++)
             v[i][j] = false;
-    
 
     /// Distinguir estados finales
     for (auto _x_ = 0; _x_ < afdinicial._finals_.size(); _x_++)
@@ -343,5 +348,194 @@ std::vector<std::map<int, bool>> EqualStatesAlgorithm(AFD& afdi) {
     return v;
 }
 
+
+std::vector< std::vector<int> > EqStates(AFD& afd){
+    int top = afd._states_;
+    std::vector< std::vector<int> > DTable(top, std::vector<int>(top, 0));
+    std::map< std::pair<int, int>, std::pair< std::pair<int, int>, std::pair<int, int> > > L;
+
+    /// Marcamos con 1 los pares de estados que son de aceptación y de no aceptación
+    for (int i = 0; i < top-1; i++) {
+        for (int j = i+1; j < top; j++) {
+            if ( !afd._finals_[i] && afd._finals_[j] || !afd._finals_[j] && afd._finals_[i] ) {
+                DTable[i][j] = 1;
+                DTable[j][i] = 1;
+            }
+        }
+    }
+
+    /// Determinando qué pares dependen de qué pares
+    for (int i = 0; i < top-1; i++) {
+        for (int j = i+1; j < top; j++) {
+            // std::cout << i << " - " << j << "\n";
+            /// Se aplican los pares que depende de otros pares
+            L[std::make_pair(i, j)] = std::make_pair(std::make_pair(afd.v[i].first, afd.v[j].first), std::make_pair(afd.v[i].second, afd.v[j].second));
+        }
+    }
+
+    /// Llenado de tabla
+    bool key = true;
+    while ( key ) {
+        key = false;
+        for (auto x : L) {
+            // M[pair(p, q)] = pair( pair(r, s), pair(r, s) )
+            if ( (DTable[x.second.first.first][x.second.first.second] == 1 || DTable[x.second.second.first][x.second.second.second] == 1) && DTable[x.first.first][x.first.second] != 1 ) {
+                DTable[x.first.first][x.first.second] = 1;
+                DTable[x.first.second][x.first.first] = 1;
+                key = true;
+                // std::cout << x.first.first << " -1- " << x.first.second << "\n";
+            }
+        }
+    }
+
+    for (int i = 0; i < top; i++)
+        std::cout << "\t" << i;
+    std::cout << std::endl;
+    for (int i = 0; i < top; i++)
+        std::cout << "\t" << "_";
+    std::cout << std::endl;
+    int n = 0;
+    for (const auto& x : DTable) {
+        std::cout << n++ << "     |\t";
+        for (const auto& y : x)
+            std::cout << y << "\t";
+        std::cout << "\n";
+    }
+
+    return DTable;
+}
+
+void Hopcroft(AFD temp) {
+    AFD afd = Reacheable(temp);
+
+    /// Obtenemos la tabla de estados equivalentes
+    std::vector< std::vector<int> > Dtable = EqStates(afd);
+
+    /// Agrupamos los estados de la tabla en conjuntos de estados
+    std::map< std::vector<int>, int > SetOfStates;
+    std::vector<bool> used(Dtable.size(), false);
+
+    int n = 0;
+    int init;
+    std::vector<int> finals;
+    std::vector<int> Eqs(afd._states_);
+
+    for (int i = 0; i < Dtable.size(); i++) {
+        if ( !used[i] ) {
+            bool key = true;
+            std::vector<int> v;
+            v.push_back(i);
+            used[i] = true;
+            if ( afd._init_ == i)
+                init = n;
+            if ( afd._finals_[i] ) {
+                finals.push_back(1);
+                key = false;
+            }
+            Eqs[i] = n;
+            for (int j = i+1; j < Dtable.size(); j++) {
+                if ( !Dtable[i][j] && !used[j]) {
+                    v.push_back(j);
+                    used[j] = true;
+                    if ( afd._init_ == j)
+                        init = n;
+                    if ( afd._finals_[j] && key ) {
+                        finals.push_back(1);
+                        key = false;
+                    }
+                    Eqs[j] = n;
+                }
+            }
+            if ( key )
+                finals.push_back(0);
+            SetOfStates[v] = n++;
+        }
+    }
+
+    /*
+    std::cout << "\nFinals:\n";
+    for (const auto& x : finals)
+        std::cout << x << " ";
+    std::cout << "\n";
+
+    std::cout << "\nEqs:\n";
+    for (const auto& x : Eqs)
+        std::cout << x << " ";
+    std::cout << "\n";
+     */
+
+    /*
+    for (const auto& x : SetOfStates) {
+        std::cout << "( ";
+        for (auto y : x.first) {
+            std::cout << y << " ";
+        }
+        std::cout << ") -> " << x.second << "\n";
+    }
+    */
+
+    /// Construir el AFD usando los conjuntos de estados como nuevos estados.
+    AFD MINIMUM(SetOfStates.size(), init, finals);
+
+    /*
+    /// Antiguo:
+    /// El doble for internamente tiene complejidad: O(E) porque
+    /// recorre conjuntos estados que por propiedad explicada en
+    /// el libro Hopcroft ningún estado se encuentra en dos conjuntos.
+    */
+
+    /// Mejorado: Cualquier elemento del conjunto de elementos tiene
+    /// un equivalente en el arreglo Eqs, accedemos al primero puesto
+    /// que todos los conjuntos de estados son estrictamente no vacíos
+    /// y accedemos su equivalente en Eqs.
+
+    for (const auto& x : SetOfStates) {
+        int i = afd.v[ x.first[0] ].first;
+        int j = afd.v[ x.first[0] ].second;
+        MINIMUM.Transition(x.second, 0, i);
+        MINIMUM.Transition(x.second, 1, j);
+        /*
+        std::set<int> v0;
+        std::set<int> v1;
+        for (auto y : x.first) {
+            v0.insert(afd.v[y].first);
+            v1.insert(afd.v[y].second);
+        }
+
+        std::vector<int> t0(v0.begin(), v0.end());
+        std::vector<int> t1(v1.begin(), v1.end());
+        std::sort(t0.begin(), t0.end());
+        std::sort(t1.begin(), t1.end());
+
+        /// Los primeros 2 fors se ejecutan en O(E) y el tercero se ejecuta en O(t0) y O(t1)
+        for (const auto& item : SetOfStates) {
+            for (auto item2 : item.first) {
+                for (auto select : t0) {
+                    if ( select == item2 )
+                        f = item.second;
+                }
+                for (auto select : t1) {
+                    if ( select == item2 )
+                        s = item.second;
+                }
+            }
+        }
+         */
+
+        /*
+        std::cout << "Transition 0: ";
+        for (auto it1 : t0)
+            std::cout << it1 << " ";
+
+        std::cout << "\nTransition 1: ";
+        for (auto it1 : t1)
+            std::cout << it1 << " ";
+        std::cout << "\n\n";
+        */
+    }
+
+    std::cout << "\nMINIMUM:\n";
+    MINIMUM.PrintAFD();
+}
 
 #endif //PROYECTOTEO_AFD_H
