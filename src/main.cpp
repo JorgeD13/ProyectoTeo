@@ -8,5 +8,5 @@ int main() {
     execute exe(key);
     exe.exe();
 
-    return 0;
+    return EXIT_SUCCESS;
 }

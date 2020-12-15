@@ -249,14 +249,15 @@ AFD Reacheable(AFD& afd) {
     return Min;
 }
 
-void Brzozowski(AFD& afdinicial, AFD& afdfinal) {
+AFD Brzozowski(AFD& afdinicial) {
     AFN afn1 = RevertAFD(afdinicial);
     AFD afd1 = Det(afn1);
     AFD afd2 = Reacheable(afd1);
 
     AFN afn2 = RevertAFD(afd2);
     AFD afd3 = Det(afn2);
-    afdfinal = Reacheable(afd3);
+    AFD afd4 = Reacheable(afd3);
+    return afd4;
 }
 
 std::vector<std::map<int, bool>> EqualStatesAlgorithm(AFD& afdinicial) {
@@ -355,9 +356,12 @@ std::vector< std::vector<int> > EqStates(AFD& afd){
     std::map< std::pair<int, int>, std::pair< std::pair<int, int>, std::pair<int, int> > > L;
 
     /// Marcamos con 1 los pares de estados que son de aceptación y de no aceptación
-    for (int i = 0; i < top-1; i++) {
-        for (int j = i+1; j < top; j++) {
-            if ( !afd._finals_[i] && afd._finals_[j] || !afd._finals_[j] && afd._finals_[i] ) {
+    for (int i = 0; i < top-1; i++)
+    {
+        for (int j = i+1; j < top; j++)
+        {
+            if ( !afd._finals_[i] && afd._finals_[j] || !afd._finals_[j] && afd._finals_[i] )
+            {
                 DTable[i][j] = 1;
                 DTable[j][i] = 1;
             }
@@ -365,8 +369,10 @@ std::vector< std::vector<int> > EqStates(AFD& afd){
     }
 
     /// Determinando qué pares dependen de qué pares
-    for (int i = 0; i < top-1; i++) {
-        for (int j = i+1; j < top; j++) {
+    for (int i = 0; i < top-1; i++)
+    {
+        for (int j = i+1; j < top; j++)
+        {
             // std::cout << i << " - " << j << "\n";
             /// Se aplican los pares que depende de otros pares
             L[std::make_pair(i, j)] = std::make_pair(std::make_pair(afd.v[i].first, afd.v[j].first), std::make_pair(afd.v[i].second, afd.v[j].second));
@@ -375,11 +381,14 @@ std::vector< std::vector<int> > EqStates(AFD& afd){
 
     /// Llenado de tabla
     bool key = true;
-    while ( key ) {
+    while ( key )
+    {
         key = false;
-        for (auto x : L) {
+        for (auto x : L)
+        {
             // M[pair(p, q)] = pair( pair(r, s), pair(r, s) )
-            if ( (DTable[x.second.first.first][x.second.first.second] == 1 || DTable[x.second.second.first][x.second.second.second] == 1) && DTable[x.first.first][x.first.second] != 1 ) {
+            if ( (DTable[x.second.first.first][x.second.first.second] == 1 || DTable[x.second.second.first][x.second.second.second] == 1) && DTable[x.first.first][x.first.second] != 1 )
+            {
                 DTable[x.first.first][x.first.second] = 1;
                 DTable[x.first.second][x.first.first] = 1;
                 key = true;
@@ -395,7 +404,8 @@ std::vector< std::vector<int> > EqStates(AFD& afd){
         std::cout << "\t" << "_";
     std::cout << std::endl;
     int n = 0;
-    for (const auto& x : DTable) {
+    for (const auto& x : DTable)
+    {
         std::cout << n++ << "     |\t";
         for (const auto& y : x)
             std::cout << y << "\t";
@@ -405,7 +415,11 @@ std::vector< std::vector<int> > EqStates(AFD& afd){
     return DTable;
 }
 
-void Hopcroft(AFD temp) {
+void HuffmanMoore(AFD temp) {
+    /// Obtenemos la tabla de estados equivalentes
+    std::vector< std::vector<int> > STable = EqStates(temp);
+
+    /// AFD afd = Reacheable(temp);
     AFD afd = Reacheable(temp);
 
     /// Obtenemos la tabla de estados equivalentes
@@ -420,26 +434,32 @@ void Hopcroft(AFD temp) {
     std::vector<int> finals;
     std::vector<int> Eqs(afd._states_);
 
-    for (int i = 0; i < Dtable.size(); i++) {
-        if ( !used[i] ) {
+    for (int i = 0; i < Dtable.size(); i++)
+    {
+        if ( !used[i] )
+        {
             bool key = true;
             std::vector<int> v;
             v.push_back(i);
             used[i] = true;
             if ( afd._init_ == i)
                 init = n;
-            if ( afd._finals_[i] ) {
+            if ( afd._finals_[i] )
+            {
                 finals.push_back(1);
                 key = false;
             }
             Eqs[i] = n;
-            for (int j = i+1; j < Dtable.size(); j++) {
-                if ( !Dtable[i][j] && !used[j]) {
+            for (int j = i+1; j < Dtable.size(); j++)
+            {
+                if ( !Dtable[i][j] && !used[j])
+                {
                     v.push_back(j);
                     used[j] = true;
                     if ( afd._init_ == j)
                         init = n;
-                    if ( afd._finals_[j] && key ) {
+                    if ( afd._finals_[j] && key )
+                    {
                         finals.push_back(1);
                         key = false;
                     }
@@ -489,11 +509,12 @@ void Hopcroft(AFD temp) {
     /// que todos los conjuntos de estados son estrictamente no vacíos
     /// y accedemos su equivalente en Eqs.
 
-    for (const auto& x : SetOfStates) {
+    for (const auto& x : SetOfStates)
+    {
         int i = afd.v[ x.first[0] ].first;
         int j = afd.v[ x.first[0] ].second;
-        MINIMUM.Transition(x.second, 0, i);
-        MINIMUM.Transition(x.second, 1, j);
+        MINIMUM.Transition(x.second, 0, Eqs[i]);
+        MINIMUM.Transition(x.second, 1, Eqs[j]);
         /*
         std::set<int> v0;
         std::set<int> v1;
@@ -537,5 +558,245 @@ void Hopcroft(AFD temp) {
     std::cout << "\nMINIMUM:\n";
     MINIMUM.PrintAFD();
 }
+
+
+struct SET{
+    std::map<int, bool> m;
+
+    void insert(int element)
+    {
+        m[element] = true;
+    }
+
+    bool exists(int element) const
+    {
+        return m.count(element);
+    }
+
+    SET intersect(const SET& s)
+    {
+        SET r;
+        if ( this->m.size() > s.m.size() )
+        {
+            for (auto it : m)
+            {
+                if ( s.exists(it.first) )
+                {
+                    r.insert(it.first);
+                }
+            }
+        } else {
+            for (auto it : s.m)
+            {
+                if ( this->exists(it.first) )
+                {
+                    r.insert(it.first);
+                }
+            }
+        }
+        return r;
+    }
+
+    SET less(const SET& s)
+    {
+        SET r;
+        for (auto it : m) {
+            if (!s.exists(it.first))
+            {
+                r.insert(it.first);
+            }
+        }
+        return r;
+    }
+
+    bool operator==(const SET& s) const
+    {
+        return this->m == s.m;
+    }
+
+    bool empty() const
+    {
+        return m.empty();
+    }
+
+    int size() const
+    {
+        return m.size();
+    }
+
+    void display()
+    {
+        for (auto it : m)
+        {
+            std::cout << it.first << " ";
+        }
+    }
+};
+
+
+AFD HopCroft(AFD afd) {
+    /// Representacion de los estados de aceptacion y no aceptacion
+    std::vector<int> Representation = afd._finals_;
+
+    SET SA, NA;
+    /// Para la Partición Inicial
+    for (int i=0; i<afd._states_; i++)
+    {
+        if ( Representation[i] )
+            SA.insert(i);
+        else
+            NA.insert(i);
+    }
+
+    std::queue<SET> W, P;
+    W.push(SA);
+    W.push(NA);
+    P.push(SA);
+    P.push(NA);
+
+    while ( !W.empty() )
+    {
+        /// choose and remove a set A from W
+        SET A = W.front();
+        W.pop();
+
+        /// let X be the set of states for which a transition on c leads to a state in A
+        SET X;
+        for (int i=0; i<afd.v.size(); i++)
+        {
+            if ( A.exists(afd.v[i].first) || A.exists(afd.v[i].second) )
+            {
+                X.insert(i);
+            }
+        }
+
+        int n = P.size();
+
+        /// for each set Y in P for which X ∩ Y is nonempty and Y \ X is nonempty do
+        while ( n-- )
+        {
+            SET Y = P.front();
+            P.pop();
+            std::cout << "Y:\n";
+            Y.display();
+            std::cout << "\n";
+
+            SET YP1 = X.intersect(Y);
+            SET YP2 = Y.less(X);
+            std::cout << "YP1:\n";
+            YP1.display();
+            std::cout << "\nYP2:\n";
+            YP2.display();
+            std::cout << "\n\n";
+
+            /// replace Y in P by the two sets X ∩ Y and Y \ X
+            if ( !YP1.empty() && !YP2.empty() )
+            {
+                P.push(YP1);
+                P.push(YP2);
+                /// if Y is in W
+                std::queue<SET> temp = W;
+                bool YnotinW = true;
+                while ( !temp.empty() )
+                {
+                    SET u = temp.front();
+                    temp.pop();
+                    if ( Y == u )
+                    {
+                        W.push(YP1);
+                        W.push(YP2);
+                        YnotinW = false;
+                        break;
+                        /// NO TOCAR ABAJO
+                        /*
+                        /// if |X ∩ Y| <= |Y \ X|
+                        if ( YP1.size() <= YP2.size() )
+                        {
+                            W.push(YP1);
+                        } else {
+                            W.push(YP2);
+                        }
+                        break;
+                         */
+                        /// NO TOCAR ARRIBA
+                    }
+                }
+                /// NO TOCAR ABAJO
+                if ( YnotinW )
+                {
+                    /// if |X ∩ Y| <= |Y \ X|
+                    if ( YP1.size() <= YP2.size() )
+                    {
+                        W.push(YP1);
+                    } else {
+                        W.push(YP2);
+                    }
+                }
+                /// NO TOCAR ARRIBA
+            } else {
+                P.push(Y);
+            }
+        }
+    }
+
+    auto su = P;
+    while (!su.empty())
+    {
+        su.front().display();
+        std::cout << "\n";
+        su.pop();
+    }
+
+    /// BUILD A MINIMUM EQUIVALENT AFD:
+    int n = 0;
+
+    /// Encontrar Estado INICIAL y FINAL(ES)
+    int init;
+    std::vector<int> Finals;
+    bool final = false;
+
+    auto Copy = P;
+    while ( !Copy.empty() )
+    {
+        SET temp = Copy.front();
+        Copy.pop();
+        for (auto it : temp.m)
+        {
+            Representation[it.first] = n;
+            if ( afd._init_ == it.first )
+            {
+                init = it.first;
+            }
+            if ( afd._finals_[it.first] )
+            {
+                final = true;
+            }
+        }
+        if ( final )
+        {
+            Finals.push_back(1);
+            final = false;
+        } else {
+            Finals.push_back(0);
+        }
+        n++;
+    }
+
+    AFD MINIMUM(Finals.size(), Representation[init], Finals);
+
+    while ( !P.empty() )
+    {
+        auto u = P.front();
+        P.pop();
+        int from = u.m.begin()->first;
+        std::pair<int, int> to = afd.v[ u.m.begin()->first ];
+        MINIMUM.Transition(Representation[ from ], 0, Representation[ to.first ]);
+        MINIMUM.Transition(Representation[ from ], 1, Representation[ to.second ]);
+    }
+
+    MINIMUM.PrintAFD();
+    return MINIMUM;
+}
+
 
 #endif //PROYECTOTEO_AFD_H

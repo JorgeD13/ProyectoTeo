@@ -58,4 +58,28 @@ void ShowData(int _key_, AFD& Final) {
     ofs.close();
 }
 
+void ShowData5(int _key_, AFD& Final) {
+    int NewQStates = Final._states_;
+    int NewInit = Final._init_;
+    std::string of = "../output5/output" + std::to_string(_key_);
+    std::ofstream ofs(of);
+    ofs << NewQStates << " " << NewInit;
+    std::string NewFinals;
+    int NewQFinals=0;
+    for (int i=0; i<Final._finals_.size(); i++) {
+        if (Final._finals_[i] != 0) {
+            NewFinals += " ";
+            NewFinals += std::to_string(i);
+            NewQFinals++;
+        }
+    }
+    ofs << " " << NewQFinals << NewFinals;
+    for (int i=0; i<Final.v.size(); i++) {
+        ofs << "\n" << i << " " << 0 << " " << Final.v[i].first;
+        ofs << "\n" << i << " " << 1 << " " << Final.v[i].second;
+    }
+
+    ofs.close();
+}
+
 #endif //PROYECTOTEO_FILESMANAGEMENT_H

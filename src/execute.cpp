@@ -53,13 +53,20 @@ void execute::exe() {
     ReciveData(_key_, temp);
 
     temp.PrintAFD();
+
     // EqStates(temp);
     // temp.PrintAFD();
     // AFD f;
-    // Brzozowski(temp, f);
-    // f.PrintAFD();
-    std::cout << "\n";
-    Hopcroft(temp);
+    // std::cout << "\nBRZOZOWSKI:\n";
+    // AFD broz = Brzozowski(temp);
+    // broz.PrintAFD();
+
+    std::cout << "HUFFMAN MOORE:\n";
+    HuffmanMoore(temp);
+
+    std::cout << "\nHOPCROFT:\n";
+    AFD M = HopCroft(temp);
+    ShowData5(_key_, M);
 
     /*
     std::cout << "------------------------ AFD dado: ------------------------\n";
